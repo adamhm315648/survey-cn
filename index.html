@@ -69,22 +69,29 @@
       // Fill fullscreen in landscape
       canvas.style.width = "100vw";
       canvas.style.height = "100vh";
+      canvas.style.position = "absolute";
+      canvas.style.top = 0;
+      canvas.style.left = 0;
+      canvas.style.transform = "none";
     } else {
-      // Portrait mode: keep fixed aspect ratio (16:10 for Unity default 960x600)
+      // Portrait: keep aspect ratio (16:10 for Unity default 960x600)
       var aspect = 960 / 600;
       var width = windowWidth;
       var height = width / aspect;
+
       if (height > windowHeight) {
         height = windowHeight;
         width = height * aspect;
       }
+
+      // Center the canvas
       canvas.style.width = width + "px";
       canvas.style.height = height + "px";
+      canvas.style.position = "absolute";
+      canvas.style.top = "50%";
+      canvas.style.left = "50%";
+      canvas.style.transform = "translate(-50%, -50%)";
     }
-
-    // Center canvas horizontally
-    canvas.style.display = "block";
-    canvas.style.margin = "0 auto";
   }
 
   window.addEventListener('resize', resizeCanvas);
@@ -121,6 +128,7 @@
   };
   document.body.appendChild(script);
 </script>
+
 
   </body>
 </html>
