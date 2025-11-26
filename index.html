@@ -87,38 +87,42 @@
       canvas.parentNode.insertBefore(wrapper, canvas);
       wrapper.appendChild(canvas);
 
-      // MOBILE LANDSCAPE SAFE MODE (works with Unity)
       function applyLandscape() {
         let w = window.innerWidth;
         let h = window.innerHeight;
 
+        // Height gap in landscape (top and bottom)
+        const gap = 20; // px — change if you want bigger or smaller gaps
+
         if (h > w) {
-          // Portrait → rotate canvas visually without moving DOM
+          // Device is in portrait → we rotate the canvas, but size it as LANDSCAPE
+          let landscapeW = h;
+          let landscapeH = w;
+
           canvas.style.position = "absolute";
-          canvas.style.width = h + "px";
-          canvas.style.height = w + "px";
+          canvas.style.width = landscapeW + "px";
+          canvas.style.height = (landscapeH - gap * 2) + "px"; // apply gap
 
           canvas.style.transform = "rotate(90deg)";
           canvas.style.transformOrigin = "center center";
 
-          // Center after rotation
-          canvas.style.top = (h - w) / 2 + "px";
-          canvas.style.left = (w - h) / 2 + "px";
-        } else {
-          // Landscape → normal fullscreen
+          // Center the rotated canvas
+          canvas.style.top = (h - (landscapeH - gap * 2)) / 2 + "px";
+          canvas.style.left = (w - landscapeW) / 2 + "px";
+        }
+        else {
+          // Already in landscape → normal but add top/bottom gaps
           canvas.style.position = "absolute";
           canvas.style.transform = "none";
-          canvas.style.top = "0";
           canvas.style.left = "0";
+
           canvas.style.width = w + "px";
-          canvas.style.height = h + "px";
+          canvas.style.height = (h - gap * 2) + "px";
+
+          // Apply vertical gap
+          canvas.style.top = gap + "px";
         }
       }
-
-      applyLandscape();
-      window.addEventListener("resize", applyLandscape);
-      window.addEventListener("orientationchange", applyLandscape);
-
 
     } else {
       // Desktop default
