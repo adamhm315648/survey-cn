@@ -120,14 +120,14 @@
 
         applyLandscape();
         window.addEventListener("resize", applyLandscape);
-        window.addEventListener("orientationchange", applyLandscape);", applyLandscape);
+        window.addEventListener("orientationchange", applyLandscape);
+        
       } else {
         // Desktop default
         canvas.style.position = "static";
         canvas.style.width = "960px";
         canvas.style.height = "600px";
         canvas.style.transform = "none";
-      }
       }
 
       document.querySelector("#unity-loading-bar").style.display = "block";
