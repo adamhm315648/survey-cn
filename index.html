@@ -73,40 +73,24 @@
       container.className = "unity-mobile";
       canvas.className = "unity-mobile";
 
-      // FULLSCREEN MOBILE CANVAS — STRONG LANDSCAPE ENFORCEMENT
-      // Wrap canvas in a rotatable container
-      let wrapper = document.createElement("div");
-      wrapper.id = "landscape-wrapper";
-      wrapper.style.position = "absolute";
-      wrapper.style.top = 0;
-      wrapper.style.left = 0;
-      wrapper.style.width = "100%";
-      wrapper.style.height = "100%";
-      wrapper.style.overflow = "hidden";
-      wrapper.style.background = "black";
-      canvas.parentNode.insertBefore(wrapper, canvas);
-      wrapper.appendChild(canvas);
+      function applyPortraitLetterbox() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
 
-      function applyLandscape() {
-        let w = window.innerWidth;
-        let h = window.innerHeight;
-
-        // Landscape aspect ratio (Unity game default)
+        // Unity landscape aspect ratio (16:9)
         const targetAspect = 16 / 9;
-
-        // Compute scaled width & height to fit inside screen
-        let screenAspect = w / h;
 
         let newWidth, newHeight;
 
-        if (screenAspect > targetAspect) {
-          // Screen is wider than game → scale by height
-          newHeight = h;
-          newWidth = newHeight * targetAspect;
-        } else {
-          // Screen is narrower → scale by width
+        // Fit the landscape game inside portrait screen
+        if (h / w > 9 / 16) {
+          // Portrait phone is taller → scale by width
           newWidth = w;
           newHeight = newWidth / targetAspect;
+        } else {
+          // Portrait phone is shorter → scale by height
+          newHeight = h;
+          newWidth = newHeight * targetAspect;
         }
 
         // Center the canvas
@@ -115,12 +99,14 @@
         canvas.style.height = newHeight + "px";
         canvas.style.top = (h - newHeight) / 2 + "px";
         canvas.style.left = (w - newWidth) / 2 + "px";
-
         canvas.style.transform = "none"; // no rotation
       }
-      applyLandscape();
-      window.addEventListener("resize", applyLandscape);
-      window.addEventListener("orientationchange", applyLandscape);
+
+      // Run initially and on resize/orientation change
+      applyPortraitLetterbox();
+      window.addEventListener("resize", applyPortraitLetterbox);
+      window.addEventListener("orientationchange", applyPortraitLetterbox);
+
 
 
     } else {
