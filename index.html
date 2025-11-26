@@ -71,38 +71,56 @@
         container.className = "unity-mobile";
         canvas.className = "unity-mobile";
 
-        // FULLSCREEN MOBILE CANVAS — LOCK TO LANDSCAPE
-        // Force landscape dimensions by comparing width/height
+        // FULLSCREEN MOBILE CANVAS — STRONG LANDSCAPE ENFORCEMENT
+        // Wrap canvas in a rotatable container
+        let wrapper = document.createElement("div");
+        wrapper.id = "landscape-wrapper";
+        wrapper.style.position = "absolute";
+        wrapper.style.top = 0;
+        wrapper.style.left = 0;
+        wrapper.style.width = "100%";
+        wrapper.style.height = "100%";
+        wrapper.style.overflow = "hidden";
+        wrapper.style.background = "black";
+        canvas.parentNode.insertBefore(wrapper, canvas);
+        wrapper.appendChild(canvas);
+
         function applyLandscape() {
           let w = window.innerWidth;
           let h = window.innerHeight;
 
           if (h > w) {
-            // Device is in portrait — rotate layout virtually
-            // Fit by swapping dimensions
+            // Portrait → rotate canvas forcibly
+            wrapper.style.width = h + "px";
+            wrapper.style.height = w + "px";
+
+            canvas.style.position = "absolute";
             canvas.style.width = h + "px";
             canvas.style.height = w + "px";
+            canvas.style.top = 0;
+            canvas.style.left = 0;
+
             canvas.style.transform = "rotate(90deg)";
             canvas.style.transformOrigin = "center center";
 
-            // Centering after rotation
-            canvas.style.position = "absolute";
-            canvas.style.top = (h - w) / 2 + "px";
-            canvas.style.left = (w - h) / 2 + "px";
+            wrapper.style.transform = `translate(${(w - h) / 2}px, ${(h - w) / 2}px)`;
           } else {
-            // Already landscape
+            // Normal landscape → no rotation
+            wrapper.style.width = w + "px";
+            wrapper.style.height = h + "px";
+
+            canvas.style.transform = "none";
             canvas.style.width = w + "px";
             canvas.style.height = h + "px";
-            canvas.style.transform = "none";
-            canvas.style.position = "absolute";
             canvas.style.top = 0;
             canvas.style.left = 0;
+            wrapper.style.transform = "none";
           }
         }
 
         applyLandscape();
         window.addEventListener("resize", applyLandscape);
-        window.addEventListener("orientationchange", applyLandscape);
+        window.addEventListener("orientationchange", applyLandscape);", applyLandscape);
       } else {
         // Desktop default
         canvas.style.position = "static";
@@ -110,7 +128,7 @@
         canvas.style.height = "600px";
         canvas.style.transform = "none";
       }
-      
+      }
 
       document.querySelector("#unity-loading-bar").style.display = "block";
 
